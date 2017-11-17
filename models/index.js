@@ -1,4 +1,3 @@
-const bluebird = require('bluebird');
 const redis = require('async-redis');
 const client = redis.createClient({ port: process.env.REDIS_PORT || 6379 });
 
@@ -41,18 +40,19 @@ const createRedisHelpers = (modelName, redis) => {
   };
 };
 
-// ----------------------------------------
-// Initialize models here
-// ----------------------------------------
-// Example
-// const Click = require('./click')(
-//   client,
-//   createRedisHelpers('clicks', client)
-// );
+
+const MessageTimestamp = require('./message_timestamp')(client);
+const Message = require('./message')(
+  client,
+  createRedisHelpers('messages', client),
+  MessageTimestamp
+);
 
 
 module.exports = {
-  redis: client
+  redis: client,
+  MessageTimestamp,
+  Message
 };
 
 

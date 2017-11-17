@@ -1,7 +1,8 @@
+require('dotenv').config();
 const repl = require('repl').start({});
 const lodash = require('lodash');
 const helpers = require('./helpers');
-
+const models = require('./models');
 
 
 
@@ -18,6 +19,15 @@ repl.context.lodash = lodash;
 repl.context.helpers = helpers;
 Object.keys(helpers).forEach((key) => {
   repl.context[key] = helpers[key];
+});
+
+
+// ----------------------------------------
+// Models
+// ----------------------------------------
+repl.context.models = models;
+Object.keys(models).forEach((key) => {
+  repl.context[key] = models[key];
 });
 
 

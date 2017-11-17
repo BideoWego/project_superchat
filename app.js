@@ -81,8 +81,29 @@ app.use(morganToolkit());
 // ----------------------------------------
 // Routes
 // ----------------------------------------
-app.use('/', (req, res) => {
-  res.render('welcome/index');
+const models = require('./models');
+const {
+  Message
+} = models;
+
+
+app.get('/', async (req, res, next) => {
+  try {
+    const messages = await Message.all();
+    res.render('welcome/index', { messages });
+  } catch (e) {
+    next(e);
+  }
+});
+
+
+app.post('/messages', async (req, res, next) => {
+  try {
+    const message = await Message.create(req.body.message);
+    res.redirect('/');
+  } catch (e) {
+    next(e);
+  }
 });
 
 

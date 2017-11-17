@@ -1,1 +1,28 @@
-<h1>Hello Express!</h1>
+<header class="page-header text-center">
+  <h1>Super Chat</h1>
+</header>
+
+
+<div id="chat">
+  {{#each messages as |message| }}
+    <p>{{ message.createdAt }} - {{ message.body }}</p>
+  {{/each }}
+</div>
+
+
+<form id="create-message" method="post" action="/messages">
+  <div class="form-group">
+    <input type="text" class="form-control" id="message" name="message" autofocus="true">
+  </div>
+  <div class="form-group">
+    <input type="submit" class="btn btn-primary">
+  </div>
+</form>
+
+
+
+
+
+
+
+
