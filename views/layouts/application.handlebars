@@ -24,10 +24,16 @@
 
     <!-- My Styles -->
     <link rel="stylesheet" href="/assets/stylesheets/css/style.css">
+
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
   </head>
-  <body>
+  <body data-base-url="{{ baseUrl }}">
     <main class="container">
       {{{ body }}}
     </main>
+
+    <!-- My Scripts -->
+    <script src="/assets/javascripts/socket.js"></script>
   </body>
 </html>

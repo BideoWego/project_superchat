@@ -3,6 +3,19 @@ const app = express();
 
 
 // ----------------------------------------
+// Socket.io
+// ----------------------------------------
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
+app.use('/socket.io', express.static(
+ `${ __dirname }/node_modules/socket.io-client/dist/`
+));
+
+io.on('connection', client => client.emit('connected', 'Socket.io connected!'));
+
+
+// ----------------------------------------
 // ENV
 // ----------------------------------------
 if (process.env.NODE_ENV !== 'production') {
@@ -141,7 +154,8 @@ args.push(() => {
 });
 
 if (require.main === module) {
-  app.listen.apply(app, args);
+  app.locals.baseUrl = `http://${ host }:${ port }`;
+  server.listen.apply(server, args);
 }
 
 
