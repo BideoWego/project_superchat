@@ -3,6 +3,23 @@ const app = express();
 
 
 // ----------------------------------------
+// ENV
+// ----------------------------------------
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+
+// ----------------------------------------
+// Models
+// ----------------------------------------
+const models = require('./models');
+const {
+  Message
+} = models;
+
+
+// ----------------------------------------
 // Socket.io
 // ----------------------------------------
 const server = require('http').createServer(app);
@@ -12,15 +29,19 @@ app.use('/socket.io', express.static(
  `${ __dirname }/node_modules/socket.io-client/dist/`
 ));
 
-io.on('connection', client => client.emit('connected', 'Socket.io connected!'));
 
-
-// ----------------------------------------
-// ENV
-// ----------------------------------------
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
+io.on('connection', socket => {
+  socket.on('messages.create.request', async message => {
+    let response;
+    try {
+      message = await Message.create(message);
+      response = message;
+    } catch (e) {
+      response = { error: e, message: e.message, stack: e.stack };
+    }
+    socket.emit('messages.create.response', response);
+  });
+});
 
 
 // ----------------------------------------
@@ -94,26 +115,10 @@ app.use(morganToolkit());
 // ----------------------------------------
 // Routes
 // ----------------------------------------
-const models = require('./models');
-const {
-  Message
-} = models;
-
-
 app.get('/', async (req, res, next) => {
   try {
     const messages = await Message.all();
-    res.render('welcome/index', { messages });
-  } catch (e) {
-    next(e);
-  }
-});
-
-
-app.post('/messages', async (req, res, next) => {
-  try {
-    const message = await Message.create(req.body.message);
-    res.redirect('/');
+    res.render('rooms/show', { messages });
   } catch (e) {
     next(e);
   }
@@ -175,9 +180,3 @@ app.use((err, req, res, next) => {
 
 
 module.exports = app;
-
-
-
-
-
-

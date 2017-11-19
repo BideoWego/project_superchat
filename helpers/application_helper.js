@@ -12,8 +12,3 @@ ApplicationHelper.CSSID = (...args) => {
 
 
 module.exports = ApplicationHelper;
-
-
-
-
-
