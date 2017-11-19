@@ -115,10 +115,61 @@ app.use(morganToolkit());
 // ----------------------------------------
 // Routes
 // ----------------------------------------
+app.use((req, res, next) => {
+  if (req.session.username) {
+    req.user = { username: req.session.username };
+    res.locals.currentUser = req.user;
+  }
+
+  const allowed = req.user ||
+    req.path === '/login' ||
+    req.path === '/logout' ||
+    req.path === '/sessions';
+  if (allowed) {
+    next();
+  } else {
+    res.redirect('/login');
+  }
+});
+
+
 app.get('/', async (req, res, next) => {
   try {
     const messages = await Message.all();
     res.render('rooms/show', { messages });
+  } catch (e) {
+    next(e);
+  }
+});
+
+
+app.get('/login', (req, res, next) => {
+  try {
+    res.render('sessions/new');
+  } catch (e) {
+    next(e);
+  }
+});
+
+
+app.get('/logout', (req, res, next) => {
+  try {
+    delete req.session.username;
+    res.redirect('/login');
+  } catch (e) {
+    next(e);
+  }
+});
+
+
+app.post('/sessions', (req, res, next) => {
+  try {
+    if (req.body.username && req.body.username.trim() !== '') {
+      req.session.username = req.body.username;
+      res.redirect('/');
+    } else {
+      res.redirect('/login');
+    }
   } catch (e) {
     next(e);
   }
