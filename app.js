@@ -39,7 +39,7 @@ app.use((req, res, next) => {
   app.locals.session = req.session;
 
   io.use((socket, next) => {
-    socket.request.session = req.session;
+    socket.request.session = { username: req.session.username };
     next();
   });
 

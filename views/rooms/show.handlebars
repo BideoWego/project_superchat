@@ -1,10 +1,14 @@
 <header class="page-header text-center">
-  <h1>Welcome to Super Chat!</h1>
+  <h1>
+    Welcome Room:
+    <span class="room">{{ room.name }}</span>
+  </h1>
+
   <p>Logged in as <code>{{ currentUser.username }}</code></p>
 </header>
 
 
-<div id="chat">
+<div id="chat" data-room-id="{{ room.id }}">
   {{#each messages as |message| }}
     <p class="message">
       <span class="timestamp">{{ datetime message.createdAt }} -</span>

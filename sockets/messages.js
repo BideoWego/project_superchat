@@ -7,8 +7,9 @@ module.exports = (io, socket) => {
     let response;
     try {
       message = await Message.create({
-        body: message,
-        username: socket.request.session.username
+        body: message.body,
+        username: socket.request.session.username,
+        roomId: message.roomId
       });
       message.createdAt = helpers.datetime(message.createdAt);
       response = message;
