@@ -8,6 +8,11 @@
 //  Limit displayed messages to number?
 //  Scrolling?
 
+
+// ----------------------------------------
+// Templates
+// ----------------------------------------
+
 var templates = {};
 
 templates.message = function(message) {
@@ -16,7 +21,21 @@ templates.message = function(message) {
 };
 
 
+// ----------------------------------------
+// Scrolling
+// ----------------------------------------
+function scrollToBottom() {
+  var scrollHeight = $('#chat').get(0).scrollHeight;
+  $('#chat').scrollTop(scrollHeight);
+}
+
+
 $(document).ready(function() {
+  scrollToBottom();
+
+  // ----------------------------------------
+  // Sockets
+  // ----------------------------------------
   var baseUrl = $('body').eq(0).attr('data-base-url');
   var socket = io.connect(baseUrl);
 
@@ -31,8 +50,6 @@ $(document).ready(function() {
     var $message = templates.message(response);
     $('#chat')
       .append($message);
+    scrollToBottom();
   });
 });
-
-
-

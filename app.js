@@ -11,37 +11,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 // ----------------------------------------
-// Models
-// ----------------------------------------
-const models = require('./models');
-const {
-  Message
-} = models;
-
-
-// ----------------------------------------
 // Socket.io
 // ----------------------------------------
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
-app.use('/socket.io', express.static(
- `${ __dirname }/node_modules/socket.io-client/dist/`
-));
-
-
-io.on('connection', socket => {
-  socket.on('messages.create.request', async message => {
-    let response;
-    try {
-      message = await Message.create(message);
-      response = message;
-    } catch (e) {
-      response = { error: e, message: e.message, stack: e.stack };
-    }
-    socket.emit('messages.create.response', response);
-  });
-});
+const server = require('./sockets')(app);
 
 
 // ----------------------------------------
@@ -115,65 +87,11 @@ app.use(morganToolkit());
 // ----------------------------------------
 // Routes
 // ----------------------------------------
-app.use((req, res, next) => {
-  if (req.session.username) {
-    req.user = { username: req.session.username };
-    res.locals.currentUser = req.user;
-  }
+const sessionsRouter = require('./routers/sessions');
+const roomsRouter = require('./routers/rooms');
 
-  const allowed = req.user ||
-    req.path === '/login' ||
-    req.path === '/logout' ||
-    req.path === '/sessions';
-  if (allowed) {
-    next();
-  } else {
-    res.redirect('/login');
-  }
-});
-
-
-app.get('/', async (req, res, next) => {
-  try {
-    const messages = await Message.all();
-    res.render('rooms/show', { messages });
-  } catch (e) {
-    next(e);
-  }
-});
-
-
-app.get('/login', (req, res, next) => {
-  try {
-    res.render('sessions/new');
-  } catch (e) {
-    next(e);
-  }
-});
-
-
-app.get('/logout', (req, res, next) => {
-  try {
-    delete req.session.username;
-    res.redirect('/login');
-  } catch (e) {
-    next(e);
-  }
-});
-
-
-app.post('/sessions', (req, res, next) => {
-  try {
-    if (req.body.username && req.body.username.trim() !== '') {
-      req.session.username = req.body.username;
-      res.redirect('/');
-    } else {
-      res.redirect('/login');
-    }
-  } catch (e) {
-    next(e);
-  }
-});
+app.use(sessionsRouter);
+app.use('/', roomsRouter);
 
 
 // ----------------------------------------
