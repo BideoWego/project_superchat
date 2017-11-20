@@ -6,7 +6,11 @@
 
 <div id="chat">
   {{#each messages as |message| }}
-    <p>{{ message.createdAt }} - {{ message.body }}</p>
+    <p>
+      <span class="message timestamp">{{ datetime message.createdAt }} -</span>
+      <span class="message username">{{ message.username }} -</span>
+      <span class="message body">{{ message.body }}</span>
+    </p>
   {{/each }}
 </div>
 

@@ -6,7 +6,7 @@ module.exports = (redis, helpers, MessageTimestamp) => {
   const Message = { helpers };
 
 
-  Message.create = async (body) => {
+  Message.create = async ({ body, username }) => {
     const id = await helpers.next.id.get();
     const key = await helpers.next.key.get();
 
@@ -14,7 +14,7 @@ module.exports = (redis, helpers, MessageTimestamp) => {
     const createdAt = date.toISOString();
     const messageTimestamp = await MessageTimestamp.create(id);
 
-    const options = { id, body, createdAt };
+    const options = { id, body, username, createdAt };
 
     await redis.hmset(key, options);
     const result = await redis.hgetall(key);

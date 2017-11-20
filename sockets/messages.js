@@ -1,15 +1,20 @@
 const { Message } = require('../models');
+const helpers = require('../helpers');
 
 
-module.exports = socket => {
+module.exports = (io, socket) => {
   socket.on('messages.create.request', async message => {
     let response;
     try {
-      message = await Message.create(message);
+      message = await Message.create({
+        body: message,
+        username: socket.request.session.username
+      });
+      message.createdAt = helpers.datetime(message.createdAt);
       response = message;
     } catch (e) {
       response = { error: e, message: e.message, stack: e.stack };
     }
-    socket.emit('messages.create.response', response);
+    io.sockets.emit('messages.create.response', response);
   });
 };

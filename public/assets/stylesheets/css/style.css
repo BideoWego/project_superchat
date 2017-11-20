@@ -8,4 +8,17 @@
   overflow-y: scroll;
 }
 
+.message {
+  font-weight: bold;
+}
+.message.timestamp {
+  color: #12f;
+}
+.message.username {
+  color: #111;
+}
+.message.body {
+  font-weight: normal;
+}
+
 

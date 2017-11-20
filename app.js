@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 // ----------------------------------------
 // Socket.io
 // ----------------------------------------
-const server = require('./sockets')(app);
+const { server, io } = require('./sockets')(app);
 
 
 // ----------------------------------------
@@ -37,6 +37,12 @@ app.use(cookieSession({
 
 app.use((req, res, next) => {
   app.locals.session = req.session;
+
+  io.use((socket, next) => {
+    socket.request.session = req.session;
+    next();
+  });
+
   next();
 });
 

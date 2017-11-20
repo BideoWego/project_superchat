@@ -18,9 +18,9 @@ module.exports = app => {
 
   io.on('connection', socket => {
     logger(socket);
-    messages(socket);
+    messages(io, socket);
   });
 
 
-  return server;
+  return { server, io };
 };
