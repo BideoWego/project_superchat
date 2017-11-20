@@ -9,22 +9,24 @@ function roomsShow() {
 
   templates.message = function(message) {
     const $timestamp = $('<span>')
-      .addClass('message timestamp')
+      .addClass('timestamp')
       .text(message.createdAt + ' - ');
 
     const $username = $('<span>')
-      .addClass('message username')
+      .addClass('username')
       .text(message.username + ' - ');
 
     const $body = $('<span>')
-      .addClass('message body')
+      .addClass('body')
       .text(message.body);
 
-    return $('<p>').append(
-      $timestamp,
-      $username,
-      $body
-    )
+    return $('<p>')
+      .addClass('message')
+      .append(
+        $timestamp,
+        $username,
+        $body
+      );
   };
 
 

@@ -6,19 +6,22 @@
   min-height: 512px;
   max-height: 512px;
   overflow-y: scroll;
+  padding: 16px;
+  border-radius: 4px;
 }
 
 .message {
   font-weight: bold;
 }
-.message.timestamp {
+.message .timestamp {
+  font-size: 10px;
   color: #12f;
 }
-.message.username {
+.message .username {
+  font-size: 11px;
   color: #111;
 }
-.message.body {
+.message .body {
   font-weight: normal;
 }
-
 
